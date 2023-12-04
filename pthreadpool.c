@@ -89,13 +89,13 @@ int pthreadpool_create(
 
     if (thread_count == 0)
     {
-        SET_ERRORF("invalid thread count: %llu", thread_count);
+        SET_ERRORF("invalid thread count: %lu", thread_count);
         goto error;
     }
 
     if (queue_size == 0)
     {
-        SET_ERRORF("invalid queue size: %llu", thread_count);
+        SET_ERRORF("invalid queue size: %lu", thread_count);
         goto error;
     }
 
@@ -219,6 +219,12 @@ int pthreadpool_shutdown(
     {
         SET_ERROR("NULL threadpool");
         goto error;
+    }
+
+    if(!threadpool->active)
+    {
+        SET_ERROR("threadpool inactive");
+        goto error;    
     }
 
     threadpool->active = false;

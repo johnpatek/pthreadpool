@@ -111,7 +111,22 @@ done:
 
 int pthreadpool_test_shutdown()
 {
-    return 0;
+        pthreadpool_t threadpool;
+    int result;
+
+    result = TEST_PASS;
+
+    TEST_ASSERT(pthreadpool_create(&threadpool, 4, 4) == PTHREADPOOL_SUCCESS)
+    TEST_ASSERT(pthreadpool_shutdown(NULL) == PTHREADPOOL_ERROR)
+    TEST_ASSERT(pthreadpool_shutdown(threadpool) == PTHREADPOOL_SUCCESS)
+    TEST_ASSERT(pthreadpool_shutdown(threadpool) == PTHREADPOOL_ERROR)
+    TEST_ASSERT(pthreadpool_destroy(threadpool) == PTHREADPOOL_SUCCESS)
+
+    goto done;
+error:
+    result = 1;
+done:
+    return result;
 }
 
 static void pthreadpool_test_function(void *arg)
