@@ -1,3 +1,6 @@
+#ifndef _TEST_H_
+#define _TEST_H_
+
 #include <pthreadpool.h>
 #include <stdio.h>
 #include <string.h>
@@ -11,3 +14,5 @@
         result = TEST_FAIL; \
         goto error;         \
     }
+
+#endif
