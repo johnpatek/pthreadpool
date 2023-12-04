@@ -98,8 +98,8 @@ int pthreadpool_test_submit()
     TEST_ASSERT(pthreadpool_submit(NULL, pthreadpool_test_function, NULL) == PTHREADPOOL_ERROR)
     TEST_ASSERT(pthreadpool_submit(threadpool, NULL, NULL) == PTHREADPOOL_ERROR)
     TEST_ASSERT(pthreadpool_submit(threadpool, pthreadpool_test_function, NULL) == PTHREADPOOL_SUCCESS)
-    //TEST_ASSERT(pthreadpool_shutdown(threadpool) == PTHREADPOOL_SUCCESS)
-    //TEST_ASSERT(pthreadpool_submit(threadpool, pthreadpool_test_function, NULL) == PTHREADPOOL_ERROR)
+    TEST_ASSERT(pthreadpool_shutdown(threadpool) == PTHREADPOOL_SUCCESS)
+    TEST_ASSERT(pthreadpool_submit(threadpool, pthreadpool_test_function, NULL) == PTHREADPOOL_ERROR)
     TEST_ASSERT(pthreadpool_destroy(threadpool) == PTHREADPOOL_SUCCESS)
 
     goto done;

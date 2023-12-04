@@ -101,7 +101,7 @@ int pthreadpool_create(
 
     status = PTHREADPOOL_SUCCESS;
     new_threadpool = calloc(1, sizeof(struct pthreadpool));
-    new_threadpool->queue_size;
+    new_threadpool->queue_size = queue_size;
     new_threadpool->queue = calloc(queue_size, sizeof(struct task));
     new_threadpool->head = 0;
     new_threadpool->tail = 0;
