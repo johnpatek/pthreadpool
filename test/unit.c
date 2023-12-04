@@ -39,6 +39,7 @@ int main(int argc, char **argv)
         }
         else if (strcmp(argv[1], "shutdown") == 0)
         {
+            status = pthreadpool_test_shutdown();
         }
         else
         {
