@@ -1,16 +1,4 @@
-#include <pthreadpool.h>
-#include <stdio.h>
-#include <string.h>
-
-#define TEST_PASS 0
-#define TEST_FAIL 1
-
-#define TEST_ASSERT(COND)   \
-    if (!(COND))            \
-    {                       \
-        result = TEST_FAIL; \
-        goto error;         \
-    }
+#include "test.h"
 
 static int pthreadpool_test_create();
 static int pthreadpool_test_destroy();
@@ -65,7 +53,7 @@ int pthreadpool_test_create()
 
     goto done;
 error:
-    result = 1;
+    result = TEST_FAIL;
 done:
     return result;
 }
@@ -83,7 +71,7 @@ int pthreadpool_test_destroy()
 
     goto done;
 error:
-    result = 1;
+    result = TEST_FAIL;
 done:
     return result;
 }
@@ -95,7 +83,7 @@ int pthreadpool_test_submit()
 
     result = TEST_PASS;
 
-    TEST_ASSERT(pthreadpool_create(&threadpool, 4, 4) == PTHREADPOOL_SUCCESS)
+    TEST_ASSERT(pthreadpool_create(&threadpool, 1, 1) == PTHREADPOOL_SUCCESS)
     TEST_ASSERT(pthreadpool_submit(NULL, pthreadpool_test_function, NULL) == PTHREADPOOL_ERROR)
     TEST_ASSERT(pthreadpool_submit(threadpool, NULL, NULL) == PTHREADPOOL_ERROR)
     TEST_ASSERT(pthreadpool_submit(threadpool, pthreadpool_test_function, NULL) == PTHREADPOOL_SUCCESS)
@@ -105,7 +93,7 @@ int pthreadpool_test_submit()
 
     goto done;
 error:
-    result = 1;
+    result = TEST_FAIL;
 done:
     return result;
 }
@@ -117,7 +105,7 @@ int pthreadpool_test_shutdown()
 
     result = TEST_PASS;
 
-    TEST_ASSERT(pthreadpool_create(&threadpool, 4, 4) == PTHREADPOOL_SUCCESS)
+    TEST_ASSERT(pthreadpool_create(&threadpool, 1, 1) == PTHREADPOOL_SUCCESS)
     TEST_ASSERT(pthreadpool_shutdown(NULL) == PTHREADPOOL_ERROR)
     TEST_ASSERT(pthreadpool_shutdown(threadpool) == PTHREADPOOL_SUCCESS)
     TEST_ASSERT(pthreadpool_shutdown(threadpool) == PTHREADPOOL_ERROR)
@@ -125,7 +113,7 @@ int pthreadpool_test_shutdown()
 
     goto done;
 error:
-    result = 1;
+    result = TEST_FAIL;
 done:
     return result;
 }

@@ -12,6 +12,7 @@ struct pthreadpool
     struct task *queue;
     size_t head;
     size_t tail;
+    size_t tasks;
     bool active;
     pthread_mutex_t mutex;
     pthread_cond_t write;
@@ -51,13 +52,14 @@ static void *pthreadpool_worker(void *arg)
     {
         current = NULL;
         (void)pthread_mutex_lock(&threadpool->mutex);
-        while (threadpool->active && threadpool->head == threadpool->tail)
+        while (threadpool->active && threadpool->tasks == 0)
         {
             (void)pthread_cond_wait(&threadpool->read, &threadpool->mutex);
         }
         if (threadpool->active)
         {
             current = threadpool->queue + threadpool->head;
+            threadpool->tasks--;
             threadpool->head = pthreadpool_next(threadpool, threadpool->head);
         }
         pthread_mutex_unlock(&threadpool->mutex);
@@ -105,6 +107,7 @@ int pthreadpool_create(
     new_threadpool->queue = calloc(queue_size, sizeof(struct task));
     new_threadpool->head = 0;
     new_threadpool->tail = 0;
+    new_threadpool->tasks = 0;
 
     new_threadpool->active = true;
     (void)pthread_mutex_init(&new_threadpool->mutex, NULL);
@@ -184,7 +187,7 @@ int pthreadpool_submit(
     }
 
     (void)pthread_mutex_lock(&threadpool->mutex);
-    while (threadpool->active && pthreadpool_next(threadpool, threadpool->tail) == threadpool->head)
+    while (threadpool->active && threadpool->tasks == threadpool->queue_size)
     {
         (void)pthread_cond_wait(&threadpool->write, &threadpool->mutex);
     }
@@ -198,6 +201,7 @@ int pthreadpool_submit(
 
     (threadpool->queue + threadpool->tail)->function = function;
     (threadpool->queue + threadpool->tail)->arg = arg;
+    threadpool->tasks++;
     threadpool->tail = pthreadpool_next(threadpool, threadpool->tail);
     (void)pthread_mutex_unlock(&threadpool->mutex);
     (void)pthread_cond_signal(&threadpool->read);
